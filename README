@@ -1,0 +1,12 @@
+This is an early version with many rough edges. I'm developing it out
+in the open to get people's feedback and contribution. Quick note:
+presently, this doesn't come "batteries included" i.e., I haven't
+setup dependencies in leiningen. To use this, you need to:
+
+1) Run "lein deps"
+
+2) Copy the files out of the lib/ directory of a voldemort tree (a
+clone of the git repository or a release tar/zip archive) into the lib
+directory of this project.
+
+Feedback, criticism and patches are welcome.
