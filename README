@@ -1,12 +1,25 @@
+The goal of clomert is to provide an idiomatic Voldemort client for
+Clojure. It's a simpler task due to the ease of Clojure to Java
+interoperability. For example, Clojure's first order maps and vectors
+implement Java's Map and List interfaces: the zipcode example in src/
+directory shows the benefit of this when it comes to Voldemort's
+serialization layer. Clojure's interactive nature also makes it
+possible to use Clojure REPL as client shell for Voldemort,
+particularly in combination with the rich editing and debugging
+capabilities of SLIME.
+
 This is an early version with many rough edges. I'm developing it out
-in the open to get people's feedback and contribution. Quick note:
-presently, this doesn't come "batteries included" i.e., I haven't
-setup dependencies in leiningen. To use this, you need to:
+in the open to get people's feedback and contributions.
+
+Note: presently this doesn't come with "batteries included" i.e., I
+haven't setup dependencies in leiningen. To use this, you need to:
 
 1) Run "lein deps"
 
-2) Copy the files out of the lib/ directory of a voldemort tree (a
+2) Copy the files out of the lib/ directory of a Voldemort tree (a
 clone of the git repository or a release tar/zip archive) into the lib
 directory of this project.
+
+Expect this to be fixed (and this note to go away) very soon.
 
 Feedback, criticism and patches are welcome.
