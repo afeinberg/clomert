@@ -103,13 +103,20 @@
   (doto v
     (.setObject obj)))
   
-(defn vector-clock-increment
-  "Increment a vector clock."
+(defn vector-clock-increment!
+  "Mutably increment a vector clock."
   ([#^VectorClock version #^Integer node]
-     (increment-version version node (System/currentTimeMillis)))
+     (vector-clock-increment! version node (System/currentTimeMillis)))
   ([#^VectorClock version #^Integer node #^Long ts]
      (doto version
        (.incrementVersion node ts))))
+
+(defn vector-clock-incremented
+  "Make an incremented copy of a vector clock."
+  ([#^VectorClock version #^Integer node]
+     (vector-clock-incremented version node (System/currentTimeMillis)))
+  ([#^VectorClock version #^Integer node #^Long ts]
+     (.incremented version node ts)))
 
 
 
