@@ -126,14 +126,11 @@
 
 (defn store-delete
   "Delete a value."
-  ([#^StoreClient client value]
-     (.delete client value)))
-
-(defn store-conditional-delete
-  "Conditional delete: delete only a specific version."
-  ([#^StoreClient client #^Versioned value]
-     (.delete client value)))
-
+  ([#^StoreClient client key]
+     (.delete client key))
+  ([#^StoreClient client key #^Version version]
+     (.delete client key version)))
+ 
 (defn store-apply-update
   "Perform an update inside an optimistic lock."
   ([#^StoreClient client update-fn]
@@ -154,6 +151,47 @@
 (defn store-preflist [key]
   "Get a preference list of responsible nodes for a key."
   (.getResponsibleNodes key))
+
+
+(defn store-do-op [#^StoreClient store op & args]
+  (cond (= op :put)
+        (let [key (first args)
+              value (second args)]
+          (store-put store key value))
+        (= op :conditional-put)
+        (let [key (first args)
+              #^Versioned value (second args)]
+          (store-conditional-put store key value))
+        (= op :put-if-not-obsolete)
+        (let [key (first args)
+              #^Versioned value (second args)]
+          (store-put-if-not-obsolete store key value))
+        (= op :get)
+        (let [key (first args)]
+          (store-get store key))
+        (= op :get-all)
+        (let [keys (first args)]
+          (store-get-all store keys))
+        (= op :get-value)
+        (let [key (first args)
+              default (second args)]
+          (if (nil? default)
+            (store-get-value store key)
+            (store-get-value store key default)))
+        (= op :delete)
+        (let [key (first args)
+              version (second args)]
+          (if (nil? version)
+            (store-delete store key)
+            (store-delete store key version)))
+        true
+        (throw (new IllegalArgumentException (str "No such operation" op)))))
+
+(defmacro do-store [#^StoreClient store & forms]
+  (map (fn [form] 
+         `(store-do-op ~store ~@form))
+       forms))
+    
 
 ;; versions and vector clocks
 

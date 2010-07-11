@@ -44,19 +44,25 @@
                (v/make-client-config {:bootstrap-urls "tcp://localhost:6666"}))]
     (let [client-zipcode (v/make-store-client factory "zipcode")
           client-person (v/make-store-client factory "person")]
-      (v/store-put client-person
-                   "alex.feinberg" { "first" "alex",
+
+      ;; shows the do-store macro
+      (v/do-store client-person
+                  (:put  "alex.feinberg" { "first" "alex",
                                      "last" "feinberg",
                                      "zipcode" 94041 })
+                  (:put "joe.schmoe" { "first" "joe",
+                                                "last" "schmoe",
+                                                "zipcode" 94041 }))
+
+      ;; regular store functions
       (v/store-put
        client-zipcode (get (v/versioned-value (v/store-get
-                                                 client-person
-                                                 "alex.feinberg"))
+                                               client-person
+                                               "alex.feinberg"))
                            "zipcode")
        ["alex.feinberg"])
-      (v/store-put client-person "joe.schmoe" { "first" "joe",
-                                                "last" "schmoe",
-                                                "zipcode" 94041 })
+
+      ;; use an optimistic lock to mutate a list inside a value
       (v/store-apply-update
        client-zipcode
        (fn [client]
@@ -67,6 +73,7 @@
                                     (v/versioned-set-value! ver (cons
                                                                  "joe.schmoe"
                                                                  val))))))
+      ;; use a get-all
       (doseq  [[_ person-versioned]
                (v/store-get-all client-person
                                 (v/versioned-value (v/store-get
