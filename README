@@ -11,15 +11,4 @@ capabilities of SLIME.
 This is an early version with many rough edges. I'm developing it out
 in the open to get people's feedback and contributions.
 
-Note: presently the Voldemort jar files aren't yet in a Maven
-repository, so you will need to manually install them before running
-"lein deps":
-
-mvn install:install-file -DgroupId=voldemort -DartifactId=voldemort \
--Dversion=0.81 -Dpackaging=jar -Dfile=/tmp/voldemort-0.81.jar
-
-mvn install:install-file -DgroupId=voldemort \
--DartifactId=voldemort-contrib -Dversion=0.81 -Dpackaging=jar \
--Dfile=/tmp/voldemort-contrib-0.81.jar
-
 Feedback, criticism and patches are welcome.
