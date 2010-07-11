@@ -137,10 +137,10 @@
 (defn store-apply-update
   "Perform an update inside an optimistic lock."
   ([#^StoreClient client update-fn]
-     (apply-update 3 client update-fn))
+     (store-apply-update 3 client update-fn))
   
   ([#^Integer max-tries #^StoreClient client update-fn]
-     (apply-update max-tries client update-fn (fn [])))
+     (store-apply-update max-tries client update-fn (fn [])))
   
   ([#^Integer max-tries #^StoreClient client update-fn rollback-fn]
      (.applyUpdate client
