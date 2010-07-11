@@ -11,15 +11,15 @@ capabilities of SLIME.
 This is an early version with many rough edges. I'm developing it out
 in the open to get people's feedback and contributions.
 
-Note: presently this doesn't come with "batteries included" i.e., I
-haven't setup dependencies in leiningen. To use this, you need to:
+Note: presently the Voldemort jar files aren't yet in a Maven
+repository, so you will need to manually install them before running
+"lein deps":
 
-1) Run "lein deps"
+mvn install:install-file -DgroupId=voldemort -DartifactId=voldemort \
+-Dversion=0.81 -Dpackaging=jar -Dfile=/tmp/voldemort-0.81.jar
 
-2) Copy the files out of the lib/ directory of a Voldemort tree (a
-clone of the git repository or a release tar/zip archive) into the lib
-directory of this project.
-
-Expect this to be fixed (and this note to go away) very soon.
+mvn install:install-file -DgroupId=voldemort \
+-DartifactId=voldemort-contrib -Dversion=0.81 -Dpackaging=jar \
+-Dfile=/tmp/voldemort-contrib-0.81.jar
 
 Feedback, criticism and patches are welcome.
