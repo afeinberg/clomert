@@ -188,10 +188,10 @@
         (throw (new IllegalArgumentException (str "No such operation" op)))))
 
 (defmacro do-store [#^StoreClient store & forms]
-  (map (fn [form] 
-         `(store-do-op ~store ~@form))
-       forms))
-    
+  (let [forms-rewritten (map (fn [form] 
+                               `(store-do-op ~store ~@form))
+                             forms)]
+    `(do ~@forms-rewritten)))
 
 ;; versions and vector clocks
 
