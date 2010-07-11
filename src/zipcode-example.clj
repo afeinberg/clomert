@@ -40,7 +40,8 @@
 
 (defn main []
   (with-open [factory
-              (v/socket-store-client-factory ["tcp://localhost:6666"])]
+              (v/make-socket-store-client-factory
+               (v/make-client-config {:bootstrap-urls "tcp://localhost:6666"}))]
     (let [client-zipcode (v/make-store-client factory "zipcode")
           client-person (v/make-store-client factory "person")]
       (v/store-put client-person
