@@ -110,7 +110,9 @@
 (defn store-get
   "Get a value and its version from a store."
   ([#^StoreClient client key]
-     (.get client key)))
+     (.get client key))
+  ([#^StoreClient client key #^Versioned default]
+     (.get client key default)))
 
 (defn store-get-all
   "Perform a multi-get on a store, return map key => (version, value)."
