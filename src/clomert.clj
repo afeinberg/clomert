@@ -9,63 +9,21 @@
 
 ;; factory functionality
 
-(def *props-map*
-     {:bootstrap-urls
-      (. ClientConfig BOOTSTRAP_URLS_PROPERTY),
-      :connection-timeout-ms
-      (. ClientConfig CONNECTION_TIMEOUT_MS_PROPERTY),
-      :enable-jmx
-      (. ClientConfig ENABLE_JMX_PROPERTY),
-      :failure-detector-async-recovery-interval
-      (. ClientConfig FAILUREDETECTOR_ASYNCRECOVERY_INTERVAL_PROPERTY),
-      :failure-detector-bannage-period
-      (. ClientConfig FAILUREDETECTOR_BANNAGE_PERIOD_PROPERTY),
-      :failure-detector-catastrophic-error-types
-      (. ClientConfig FAILUREDETECTOR_CATASTROPHIC_ERROR_TYPES_PROPERTY),
-      :failure-detector-implementation
-      (. ClientConfig FAILUREDETECTOR_IMPLEMENTATION_PROPERTY),
-      :failure-detector-request-length-threshold
-      (. ClientConfig FAILUREDETECTOR_REQUEST_LENGTH_THRESHOLD_PROPERTY),
-      :failure-detector-threshold-count-minimum
-      (. ClientConfig FAILUREDETECTOR_THRESHOLD_COUNTMINIMUM_PROPERTY),
-      :failure-detector-threshold-interval
-      (. ClientConfig FAILUREDETECTOR_THRESHOLD_INTERVAL_PROPERTY),
-      :failure-detector-treshold
-      (. ClientConfig FAILUREDETECTOR_THRESHOLD_PROPERTY),
-      :max-bootstrap-retries
-      (. ClientConfig MAX_BOOTSTRAP_RETRIES),
-      :max-connections-per-node
-      (. ClientConfig MAX_CONNECTIONS_PER_NODE_PROPERTY),
-      :max-queued-requests
-      (. ClientConfig MAX_QUEUED_REQUESTS_PROPERTY),
-      :max-threads
-      (. ClientConfig MAX_THREADS_PROPERTY),
-      :max-total-connections
-      (. ClientConfig MAX_TOTAL_CONNECTIONS_PROPERTY),
-      :node-bannage-ms
-      (. ClientConfig MAX_TOTAL_CONNECTIONS_PROPERTY),
-      :request-format
-      (. ClientConfig REQUEST_FORMAT_PROPERTY),
-      :routing-timeout-ms
-      (. ClientConfig ROUTING_TIMEOUT_MS_PROPERTY),
-      :serializer-factory-class
-      (. ClientConfig SERIALIZER_FACTORY_CLASS_PROPERTY),
-      :socket-buffer-size
-      (. ClientConfig SOCKET_BUFFER_SIZE_PROPERTY),
-      :socket-keepalive
-      (. ClientConfig SOCKET_KEEPALIVE_PROPERTY),
-      :socket-timeout-ms
-      (. ClientConfig SOCKET_TIMEOUT_MS_PROPERTY),
-      :thread-idle-ms
-      (. ClientConfig THREAD_IDLE_MS_PROPERTY) 
-      })
-                   
+(defmacro get-prop [keyword]
+  (let [rewrite-keyword (fn [#^String kw]
+                          (str (.replace
+                                (.toUpperCase (.substring kw 1))
+                                "-" "_")
+                               "_PROPERTY"))
+        keyword-rewritten (rewrite-keyword (str keyword))]
+    `(. ClientConfig ~(symbol keyword-rewritten))))
+
 (defn make-client-config
   ([config-map]
      (let [props (new java.util.Properties)]
        (doseq [[k v] config-map]
          (doto props
-           (.setProperty (get *props-map* k) (.toString v))))
+           (.setProperty (get-prop k) (.toString v))))
        (new ClientConfig props))))
 
 (defn socket-store-client-factory
