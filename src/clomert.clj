@@ -16,7 +16,7 @@
                                 "-" "_")
                                "_PROPERTY"))
         keyword-rewritten (rewrite-keyword (str keyword))]
-    `(. ClientConfig ~(symbol keyword-rewritten))))
+    `(ClientConfig. ~'(symbol `keyword-rewritten))))
 
 (defn make-client-config
   ([config-map]
