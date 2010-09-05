@@ -9,22 +9,29 @@
 
 ;; factory functionality
 
-(defmacro get-prop [keyword]
-  (let [rewrite-keyword (fn [#^String kw]
-                          (str (.replace
-                                (.toUpperCase (.substring kw 1))
-                                "-" "_")
-                               "_PROPERTY"))
-        keyword-rewritten (rewrite-keyword (str keyword))]
-    `(ClientConfig. ~'(symbol `keyword-rewritten))))
+(def rewrite-keyword
+  (memoize (fn [#^Keyword kw]
+             (str (.replace
+                   (.toUpperCase
+                    (.substring (str kw) 1))
+                   "-"
+                   "_")
+                  "_PROPERTY"))))
 
-(defn make-client-config
-  ([config-map]
-     (let [props (new java.util.Properties)]
-       (doseq [[k v] config-map]
-         (doto props
-           (.setProperty (get-prop k) (.toString v))))
-       (new ClientConfig props))))
+(defmacro get-prop [cls kw]
+  `(. ~cls ~(symbol (rewrite-keyword kw))))
+
+(defmacro props-from-map [config-map]
+  `(let [props# (new java.util.Properties)]
+     (doto props#
+       ~@(map (fn [[k v]]
+               (if (not (= (.length (str k)) 0))
+                 `(.setProperty (get-prop ClientConfig ~k) ~(str v))))
+              config-map))))
+
+(defmacro make-client-config [config-map]
+  `(let [props# (props-from-map ~config-map)]
+    (new ClientConfig props#)))
 
 (defn socket-store-client-factory
   "Create a socket store client factory [Deprecated]."
