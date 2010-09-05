@@ -44,16 +44,16 @@
                (v/make-client-config {:bootstrap-urls "tcp://localhost:6666"}))]
     (let [client-zipcode (v/make-store-client factory "zipcode")
           client-person (v/make-store-client factory "person")]
-
+      
       ;; shows the do-store macro
       (v/do-store client-person
                   (:put  "alex.feinberg" { "first" "alex",
-                                     "last" "feinberg",
-                                     "zipcode" 94041 })
+                                           "last" "feinberg",
+                                           "zipcode" 94041 })
                   (:put "joe.schmoe" { "first" "joe",
-                                                "last" "schmoe",
-                                                "zipcode" 94041 }))
-
+                                       "last" "schmoe",
+                                       "zipcode" 94041 }))
+      
       ;; regular store functions
       (v/store-put
        client-zipcode (get (v/versioned-value (v/store-get
@@ -61,7 +61,7 @@
                                                "alex.feinberg"))
                            "zipcode")
        ["alex.feinberg"])
-
+      
       ;; use an optimistic lock to mutate a list inside a value
       (v/store-apply-update
        client-zipcode
@@ -82,7 +82,6 @@
         (println (get (v/versioned-value person-versioned)
                       "first")
                  "lives in 94041")))))
-
 
 
 
