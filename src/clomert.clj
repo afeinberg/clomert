@@ -108,9 +108,9 @@
                                (rollback-fn)))
                    max-tries)))
 
-(defn store-preflist [key]
+(defn store-preflist [client key]
   "Get a preference list of responsible nodes for a key."
-  (.getResponsibleNodes key))
+  (.getResponsibleNodes client key))
 
 
 (defn store-do-op [#^StoreClient store op & args]
