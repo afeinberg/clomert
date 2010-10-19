@@ -7,8 +7,6 @@
             UpdateAction)
            (voldemort.versioning Version Versioned VectorClock)))
 
-;; factory functionality
-
 (def rewrite-keyword
   (memoize (fn [#^Keyword kw]
              (str (.replace
@@ -18,20 +16,19 @@
                    "_")
                   "_PROPERTY"))))
 
-(defmacro get-prop [cls kw]
-  `(. ~cls ~(symbol (rewrite-keyword kw))))
+(defn mk-key [kw]
+  (eval (symbol (str "ClientConfig/" (rewrite-keyword kw)))))
 
-(defmacro props-from-map [config-map]
-  `(let [props# (new java.util.Properties)]
-     (doto props#
-       ~@(map (fn [[k v]]
-               (if (not (= (.length (str k)) 0))
-                 `(.setProperty (get-prop ClientConfig ~k) ~(str v))))
-              config-map))))
+(defn props-from-map [config]
+  (doto (java.util.Properties.)
+    (.putAll
+     (into {}
+	   (map (fn [[k v]]
+		  (mk-key k) (str v))
+		config)))))
 
-(defmacro make-client-config [config-map]
-  `(let [props# (props-from-map ~config-map)]
-    (new ClientConfig props#)))
+(defn make-client-config [config]
+  (ClientConfig. (props-from-map config)))
 
 (defn socket-store-client-factory
   "Create a socket store client factory [Deprecated]."
