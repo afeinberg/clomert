@@ -33,9 +33,11 @@
      5 client
      (fn [#^StoreClient scl]
        (let [v (v/store-get scl "foo")]
-         (v/store-conditional-put scl "foo"
-                                  (if (nil? v)
-                                    (v/make-versioned "a")
-                                    (v/versioned-set-value!
-                                     (v (str (v/versioned-value v)
-                                             "b"))))))))))
+         (do 
+           (v/store-conditional-put scl "foo"
+                                    (if (nil? v)
+                                      (v/make-versioned "a")
+                                      (v/versioned-set-value!
+                                       (v (str (v/versioned-value v)
+                                               "b")))))
+           (is (= (v/store-get-value scl "foo") "a"))))))))
