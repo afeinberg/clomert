@@ -24,7 +24,7 @@
     (.putAll
      (into {}
 	   (map (fn [[k v]]
-		  (mk-key k) (str v))
+		  {(mk-key k) (str v)})
 		config)))))
 
 (defn make-client-config [config]
